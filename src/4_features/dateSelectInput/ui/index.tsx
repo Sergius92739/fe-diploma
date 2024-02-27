@@ -1,6 +1,6 @@
 import { inputNames } from '6_shared';
 import { Input, inputSizeCSS } from '6_shared';
-import { useState, type FC, ChangeEvent } from 'react';
+import { type FC, ChangeEvent } from 'react';
 
 type T_DateSelectInputProps = {
   nameAttr: inputNames.DATE_FROM_CITY | inputNames.DATE_TO_CITY;

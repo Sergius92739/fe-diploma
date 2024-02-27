@@ -1,20 +1,28 @@
 import 'react-day-picker/dist/style.css';
 import '../../../1_app/styles/date-picker.css';
-import type { FC, MutableRefObject, RefObject } from 'react';
-import { createRef, useEffect, useRef, useState } from 'react';
-import { format, addMonths, addDays } from 'date-fns';
-import { CaptionProps, DayPicker } from 'react-day-picker';
-import { is, ru } from 'date-fns/locale';
+import type { FC, RefObject } from 'react';
+import {
+  CaptionProps,
+  DayPicker,
+  SelectSingleEventHandler
+} from 'react-day-picker';
+import { ru } from 'date-fns/locale';
 import { DatePickerCaption } from './datePickerCaption';
-import { hiddenCalssNames, inputNames, useOutsideClick } from '6_shared';
+import { hiddenCalssNames } from '6_shared';
 
 type TDatePickerProps = {
   isVisible: boolean;
   reference: RefObject<HTMLDivElement>;
+  selected: Date | undefined;
+  onSelect: SelectSingleEventHandler | undefined;
 };
 
-export const DatePicker: FC<TDatePickerProps> = ({ isVisible, reference }) => {
-  const [selected, setSelected] = useState<Date>();
+export const DatePicker: FC<TDatePickerProps> = ({
+  isVisible,
+  reference,
+  selected,
+  onSelect
+}) => {
   const today = new Date();
 
   return (
@@ -26,7 +34,7 @@ export const DatePicker: FC<TDatePickerProps> = ({ isVisible, reference }) => {
         mode="single"
         required
         selected={selected}
-        onSelect={setSelected}
+        onSelect={onSelect}
         locale={ru}
         showOutsideDays
         fixedWeeks

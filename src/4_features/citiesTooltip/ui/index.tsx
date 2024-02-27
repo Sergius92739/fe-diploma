@@ -7,11 +7,15 @@ import type { FC } from 'react';
 type T_CitiesTooltipProps = {
   cities: TCityObj[];
   handleCitySelection: (cityObj: TCityObj) => void;
+  loading: boolean;
+  error: string;
 };
 
 export const CitiesTooltip: FC<T_CitiesTooltipProps> = ({
   cities,
-  handleCitySelection
+  handleCitySelection,
+  loading,
+  error
 }) => {
   cities = citiesObjMapper(cities);
 
@@ -19,6 +23,8 @@ export const CitiesTooltip: FC<T_CitiesTooltipProps> = ({
     <ul
       className={`py-3 ${btnCSS.XL_WIDTH} bg-white text-base rounded-[3px] mt-1 absolute z-10`}
     >
+      {loading && <li className="px-5 py-1">Загрузка...</li>}
+      {error && <li className="px-5 py-1">{error}</li>}
       {cities.map((el) => (
         <TooltipCitiesItem
           key={el._id}

@@ -1,4 +1,4 @@
-import { citiesReducer } from '4_features/directionSelectInput/model/citiesSlice';
+import { ticketSearchReducer } from '3_widgets/ticketSearchForm/model/ticketSearchSlice';
 import { baseApi } from '6_shared';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
@@ -6,7 +6,7 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
-    cities: citiesReducer
+    ticketSearch: ticketSearchReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware)

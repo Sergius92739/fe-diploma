@@ -13,7 +13,7 @@ export const TooltipCitiesItem: FC<T_TooltipCitiesProps> = ({
   return (
     <li
       onClick={() => onClick(cityObj)}
-      className="px-5 py-1 hover:bg-slate-300 cursor-pointer focus:border-4 focus:border-gray-900"
+      className="px-5 py-1 hover:bg-slate-300 cursor-pointer"
       tabIndex={0}
     >
       {cityObj.name}

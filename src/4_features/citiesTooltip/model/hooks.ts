@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { TCityObj, TSearchResult } from './types';
 import { fromEvent, debounceTime, map, switchMap, filter } from 'rxjs';
-import { API_URL } from '6_shared';
+import { API_URL, apiMap } from '6_shared';
 import { getInputByName } from '6_shared';
 
 export const useCitySearch = (inputName: string): TSearchResult => {
@@ -23,7 +23,7 @@ export const useCitySearch = (inputName: string): TSearchResult => {
       filter(Boolean),
       switchMap((value) => {
         setLoading(true);
-        return fetch(`${API_URL}/routes/cities?name=${value}`)
+        return fetch(`${API_URL}${apiMap.CITIES}?name=${value}`)
           .then((response) => {
             if (!response.ok) {
               throw new Error('Ошибка запроса');
