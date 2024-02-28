@@ -1,4 +1,9 @@
-import type { FC, FormEvent, FormEventHandler } from 'react';
+import type {
+  ChangeEventHandler,
+  FC,
+  FormEvent,
+  FormEventHandler
+} from 'react';
 import { ChangeEvent, useRef, useCallback, useReducer } from 'react';
 import {
   CalendarIcon,
@@ -35,15 +40,17 @@ import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { selectTicketSearch } from '../model/ticketSearchSlice';
 import { formReducer } from '../model/formReducer';
-import { initialFormState } from '../model/useReducerFormState';
-import { formReducerActions } from '6_shared/config/enums';
+import { initialFormState } from '../model/formState';
+import { formReducerActions, navigationMap } from '6_shared/config/enums';
 import { ActionCreator, PayloadAction } from '@reduxjs/toolkit';
+import { useNavigate } from 'react-router-dom';
 
 export const TicketSearchForm: FC = () => {
   const appDispatch = useAppDispatch();
   const [formState, formDispatch] = useReducer(formReducer, initialFormState);
   const departureDatePickerRef = useRef<HTMLDivElement>(null);
   const arrivalDatePickerRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   const {
     startCityInputValue,
     endCityInputValue,
@@ -118,7 +125,7 @@ export const TicketSearchForm: FC = () => {
     }
   };
 
-  const setDateToGlobalStore = (
+  const setDateToGlobalState = (
     action: ActionCreator<PayloadAction<string>>,
     digitsArray: string[]
   ) => {
@@ -134,8 +141,8 @@ export const TicketSearchForm: FC = () => {
     }
   };
 
-  const handleDirectionInputChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+  const handleDirectionInputChange: ChangeEventHandler<HTMLInputElement> =
+    useCallback((e) => {
       const { value } = e.target;
       if (e.target.name === inputNames.FROM_CITY) {
         formDispatch({
@@ -155,12 +162,10 @@ export const TicketSearchForm: FC = () => {
           setEndSearchResult([]);
         }
       }
-    },
-    []
-  );
+    }, []);
 
-  const handleDateInputChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+  const handleDateInputChange: ChangeEventHandler<HTMLInputElement> =
+    useCallback((e) => {
       const digitsArray = e.target.value.replace(/[^\d]/g, '').split('', 8);
       checkArrayOfEnteredDigits(digitsArray, e);
       if (digitsArray.length > 4) {
@@ -174,18 +179,16 @@ export const TicketSearchForm: FC = () => {
           type: formReducerActions.SET_DEPARTURE_DATE_INPUT_VALUE,
           value: digitsArray.join('')
         });
-        setDateToGlobalStore(setSelectedDepartureDate, digitsArray);
+        // setDateToGlobalState(setSelectedDepartureDate, digitsArray);
       }
       if (e.target.name === inputNames.DATE_TO_CITY) {
         formDispatch({
           type: formReducerActions.SET_ARRIVAL_DATE_INPUT_VALUE,
           value: digitsArray.join('')
         });
-        setDateToGlobalStore(setSelectedArrivalDate, digitsArray);
+        // setDateToGlobalState(setSelectedArrivalDate, digitsArray);
       }
-    },
-    []
-  );
+    }, []);
 
   const handleStartCitySelection = useCallback((city: TCityObj) => {
     appDispatch(setSelectedStartCityObject(city));
@@ -249,15 +252,24 @@ export const TicketSearchForm: FC = () => {
     []
   );
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback((e) => {
-    e.preventDefault();
-    console.log({
+  const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+      navigate(navigationMap.TRAIN);
+      console.log({
+        selectedStartCityObject,
+        selectedEndCityObject,
+        selectedDepartureDate,
+        selectedArrivalDate
+      });
+    },
+    [
       selectedStartCityObject,
       selectedEndCityObject,
       selectedDepartureDate,
       selectedArrivalDate
-    });
-  }, []);
+    ]
+  );
 
   return (
     <form
