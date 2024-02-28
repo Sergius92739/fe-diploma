@@ -1,5 +1,5 @@
 import { inputPlaceholderColor } from '6_shared';
-import type { ChangeEvent, ChangeEventHandler, FC } from 'react';
+import type { ChangeEvent, ChangeEventHandler, FocusEvent, FC } from 'react';
 
 type T_InputProps = {
   placeholder?: string;
@@ -8,8 +8,7 @@ type T_InputProps = {
   value?: string;
   typeAttr: 'text' | 'date' | 'email';
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  // | ((event: ChangeEvent<HTMLInputElement>) => void)
-  // | ((date: Date) => void);
+  onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
   requiredAttr?: boolean;
 };
 
@@ -20,7 +19,8 @@ export const Input: FC<T_InputProps> = ({
   value,
   typeAttr,
   onChange,
-  requiredAttr
+  requiredAttr,
+  onBlur
 }) => {
   return (
     <>
@@ -33,6 +33,7 @@ export const Input: FC<T_InputProps> = ({
           value={value}
           onChange={onChange as ChangeEventHandler<HTMLInputElement>}
           required={requiredAttr}
+          onBlur={onBlur}
         />
       </div>
     </>

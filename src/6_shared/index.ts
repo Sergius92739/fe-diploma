@@ -27,4 +27,5 @@ export {
 export { getTailwindClasses } from './lib/utils/getTailwindClasses';
 export { isValidDate } from './lib/utils/isValidDate';
 export { getInputByName } from './lib/utils/getInputByName';
-export { setErrorPlaceholder } from './lib/utils/setErrorPlaceholder';
+export { setDateInputErrorPlaceholder } from './lib/utils/setDateInputErrorPlaceholder';
+export { upperCaseFirst } from './lib/utils/upperCaseFirst';

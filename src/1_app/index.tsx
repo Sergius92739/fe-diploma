@@ -5,7 +5,7 @@ import { withProviders } from './providers';
 
 function App() {
   return (
-    <div className="App bg-[url('../6_shared/assets/images/header-1.png')] bg-cover">
+    <div className="App">
       <Routing />
     </div>
   );

@@ -1,8 +1,8 @@
 @import './fonts.css';
 
 :root {
-  --min-width: 320px;
+  --min-width: 325px;
   --max-width: 1920px;
-  --max-width-container: 1170px;
+  --max-width-container: 1456px;
   --font-family: 'Roboto';
 }

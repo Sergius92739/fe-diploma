@@ -17,7 +17,7 @@ export const CitiesTooltip: FC<T_CitiesTooltipProps> = ({
   loading,
   error
 }) => {
-  cities = citiesObjMapper(cities);
+  const modifyCities = citiesObjMapper(cities);
 
   return cities.length ? (
     <ul
@@ -25,11 +25,14 @@ export const CitiesTooltip: FC<T_CitiesTooltipProps> = ({
     >
       {loading && <li className="px-5 py-1">Загрузка...</li>}
       {error && <li className="px-5 py-1">{error}</li>}
-      {cities.map((el) => (
+      <li className="px-5 py-2 text-xl font-medium">
+        Выберите город из списка:
+      </li>
+      {modifyCities.map((el) => (
         <TooltipCitiesItem
           key={el._id}
           cityObj={el}
-          onClick={() => handleCitySelection(el)}
+          onClick={(el) => handleCitySelection(el)}
         />
       ))}
     </ul>

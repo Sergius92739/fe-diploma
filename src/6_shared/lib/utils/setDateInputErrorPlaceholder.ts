@@ -1,7 +1,7 @@
 import { getInputByName, inputPlaceholderColor } from '6_shared';
 import { ChangeEvent } from 'react';
 
-export const setErrorPlaceholder = (
+export const setDateInputErrorPlaceholder = (
   e: ChangeEvent<HTMLInputElement>,
   errorPlaceholder: string
 ) => {
