@@ -1,4 +1,5 @@
 import { useGetByDirectionsQuery } from '3_widgets/ticketSearchForm/api/api';
+import { Loader } from '6_shared';
 import { useEffect } from 'react';
 
 const TrainSelectPage = () => {
@@ -13,7 +14,7 @@ const TrainSelectPage = () => {
 
   return (
     <div>
-      {isLoading && <div>Loading...</div>}
+      {isLoading && <Loader />}
       {error && <div>Error!!!</div>}
       <div>TrainSelectPage</div>
     </div>
