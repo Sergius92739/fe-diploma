@@ -1,6 +1,6 @@
 import { inputSizeCSS } from '6_shared';
 import { Input } from '6_shared';
-import { ChangeEvent, ChangeEventHandler, FC } from 'react';
+import { ChangeEvent, FocusEvent, FC } from 'react';
 import { inputNames } from '6_shared';
 
 export type TDirectionSelectInputProps = {
@@ -9,6 +9,8 @@ export type TDirectionSelectInputProps = {
   inputValue: string;
   typeAttr: 'text' | 'date' | 'email';
   requiredAttr?: boolean;
+  onBlur?: (event: FocusEvent<HTMLInputElement, Element>) => void;
+  onFocus?: (event: FocusEvent<HTMLInputElement, Element>) => void;
 };
 
 export const DirectionSelectInput: FC<TDirectionSelectInputProps> = ({
@@ -16,7 +18,9 @@ export const DirectionSelectInput: FC<TDirectionSelectInputProps> = ({
   handleChange,
   inputValue,
   typeAttr,
-  requiredAttr
+  requiredAttr,
+  onBlur,
+  onFocus
 }) => {
   return (
     <Input
@@ -27,6 +31,8 @@ export const DirectionSelectInput: FC<TDirectionSelectInputProps> = ({
       onChange={handleChange}
       typeAttr={typeAttr}
       requiredAttr={requiredAttr}
+      onBlur={onBlur}
+      onFocus={onFocus}
     />
   );
 };

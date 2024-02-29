@@ -17,7 +17,7 @@ export const useCitySearch = (inputName: string): TSearchResult => {
     }
 
     const inputObservable = fromEvent(inputElement, 'input').pipe(
-      debounceTime(100),
+      debounceTime(200),
       map((event) => (event.target as HTMLInputElement).value),
       map((value) => value.trim()),
       filter(Boolean),

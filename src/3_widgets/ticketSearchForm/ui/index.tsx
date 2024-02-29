@@ -1,5 +1,5 @@
-import type { ChangeEventHandler, FC, FormEventHandler } from 'react';
-import { ChangeEvent, useRef, useCallback, useReducer } from 'react';
+import type { FC, FormEventHandler, ChangeEvent, FocusEvent } from 'react';
+import { useRef, useCallback, useReducer } from 'react';
 import {
   CalendarIcon,
   inputNames,
@@ -10,9 +10,10 @@ import {
   LocationIcon,
   useOutsideClick,
   ticketsSearchAttributes,
-  setDateInputErrorPlaceholder,
+  setInputErrorPlaceholder,
   useAppDispatch,
-  upperCaseFirst
+  upperCaseFirst,
+  formatDate
 } from '6_shared';
 import {
   DateSelectInput,
@@ -31,15 +32,14 @@ import {
   setSelectedArrivalDate
 } from '../model/ticketSearchSlice';
 import { DatePicker } from '4_features/datePicker/ui';
-import { SelectSingleEventHandler } from 'react-day-picker';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { selectTicketSearch } from '../model/ticketSearchSlice';
 import { formReducer } from '../model/formReducer';
 import { initialFormState } from '../model/formState';
 import { formReducerActions, navigationMap } from '6_shared/config/enums';
-import { ActionCreator, PayloadAction } from '@reduxjs/toolkit';
 import { useNavigate } from 'react-router-dom';
+import { DirectionInputTooltip } from '4_features/directionInputTooltip/ui';
 
 export const TicketSearchForm: FC = () => {
   const appDispatch = useAppDispatch();
@@ -84,6 +84,11 @@ export const TicketSearchForm: FC = () => {
     false
   );
 
+  const [departureInputTooltipVisible, toggleDepartureInputTooltipVisible] =
+    useReducer((v) => !v, false);
+  const [arrivalInputTooltipVisible, toggleArrivalInputTooltipVisible] =
+    useReducer((v) => !v, false);
+
   useOutsideClick(
     departureDatePickerRef,
     () => isDepartureDatePickerVisible && setDepartureDatePickerVisible()
@@ -94,30 +99,89 @@ export const TicketSearchForm: FC = () => {
     () => isArrivalDatePickerVisible && setArrivalDatePickerVisible()
   );
 
-  const isValidDateInputValue = (digitsArray: string[]) => {
-    if (digitsArray.length === 10) {
-      const day = +digitsArray.slice(0, 2).join('');
-      const month = +digitsArray.slice(3, 5).join('');
-      const year = +digitsArray.slice(6, 9).join('');
-      return isValidDate(year, month, day);
+  const isValidDateInputValue = (inputValue: string) => {
+    if (inputValue.length !== 10) {
+      return;
     }
+    const arr = inputValue.split('.');
+    const day = +arr[0];
+    const month = +arr[1];
+    const year = +arr[2];
+    if (year < new Date().getFullYear()) {
+      return false;
+    }
+    if (month < new Date().getMonth() + 1) {
+      return false;
+    }
+    return isValidDate(year, month, day);
   };
 
-  const setDateToGlobalState = (
-    action: ActionCreator<PayloadAction<string>>,
-    digitsArray: string[]
-  ) => {
-    if (digitsArray.length === 10) {
-      const day = +digitsArray.slice(0, 2).join('');
-      let month = +digitsArray.slice(3, 5).join('');
-      const year = +digitsArray.slice(6, 9).join('');
-      if (isValidDate(year, month, day)) {
-        const date = new Date(year, --month, day);
-        const dateToString = format(date, 'y-MM-dd');
-        appDispatch(action(dateToString));
+  const handleDirectonInputBlur = useCallback(
+    (
+      e: FocusEvent<HTMLInputElement>,
+      action:
+        | formReducerActions.SET_START_CITY_INPUT_VALUE
+        | formReducerActions.SET_END_CITY_INPUT_VALUE
+    ) => {
+      const { value } = e.target;
+      if (value && !e.relatedTarget?.closest('ul')?.querySelector('li')) {
+        formDispatch({
+          type: action,
+          value: ''
+        });
+        setInputErrorPlaceholder(e, 'Выберите город из списка');
+        if (action === formReducerActions.SET_START_CITY_INPUT_VALUE) {
+          setStartSearchResult([]);
+        }
+        if (action === formReducerActions.SET_END_CITY_INPUT_VALUE) {
+          setEndSearchResult([]);
+        }
       }
-    }
-  };
+      if (e.target.name === inputNames.FROM_CITY) {
+        toggleDepartureInputTooltipVisible();
+      }
+      if (e.target.name === inputNames.TO_CITY) {
+        toggleArrivalInputTooltipVisible();
+      }
+    },
+    []
+  );
+
+  const handleDateInputBlur = useCallback(
+    (
+      e: FocusEvent<HTMLInputElement>,
+      action:
+        | formReducerActions.SET_DEPARTURE_DATE_INPUT_VALUE
+        | formReducerActions.SET_ARRIVAL_DATE_INPUT_VALUE
+    ) => {
+      const { value } = e.target;
+      if (value && value.length !== 10) {
+        formDispatch({
+          type: action,
+          value: ''
+        });
+        setInputErrorPlaceholder(e, 'Введите день, месяц и год');
+      }
+      if (value && value.length === 10) {
+        if (!isValidDateInputValue(value)) {
+          formDispatch({
+            type: action,
+            value: ''
+          });
+          setInputErrorPlaceholder(e, 'Невалидная дата');
+          return;
+        } else {
+          if (action === formReducerActions.SET_DEPARTURE_DATE_INPUT_VALUE) {
+            appDispatch(setSelectedDepartureDate(formatDate(value)));
+          }
+          if (action === formReducerActions.SET_ARRIVAL_DATE_INPUT_VALUE) {
+            appDispatch(setSelectedArrivalDate(formatDate(value)));
+          }
+        }
+      }
+    },
+    []
+  );
 
   const handleDirectionInputChange = useCallback(
     (
@@ -156,13 +220,14 @@ export const TicketSearchForm: FC = () => {
         type: action,
         value: digitsArray.join('')
       });
+
       if (digitsArray.length === 10) {
-        if (!isValidDateInputValue(digitsArray)) {
+        if (!isValidDateInputValue(e.target.value)) {
           formDispatch({
             type: action,
             value: ''
           });
-          setDateInputErrorPlaceholder(e, 'Невалидная дата');
+          setInputErrorPlaceholder(e, 'Невалидная дата');
           return;
         }
       }
@@ -177,7 +242,12 @@ export const TicketSearchForm: FC = () => {
         | formReducerActions.SET_START_CITY_INPUT_VALUE
         | formReducerActions.SET_END_CITY_INPUT_VALUE
     ) => {
-      appDispatch(setSelectedStartCityObject(city));
+      if (action === formReducerActions.SET_START_CITY_INPUT_VALUE) {
+        appDispatch(setSelectedStartCityObject(city));
+      }
+      if (action === formReducerActions.SET_END_CITY_INPUT_VALUE) {
+        appDispatch(setSelectedEndCityObject(city));
+      }
       formDispatch({
         type: action,
         value: city.name
@@ -188,43 +258,34 @@ export const TicketSearchForm: FC = () => {
     []
   );
 
-  const handleDepartureDaySelect: SelectSingleEventHandler = useCallback(
-    (date) => {
+  const handleDaySelecttion = useCallback(
+    (
+      date: Date | undefined,
+      inputAction:
+        | formReducerActions.SET_DEPARTURE_DATE_INPUT_VALUE
+        | formReducerActions.SET_ARRIVAL_DATE_INPUT_VALUE,
+      dayPickerAction:
+        | formReducerActions.SET_SELECTED_DAY_PICKER_DEPARTURE
+        | formReducerActions.SET_SELECTED_DAY_PICKER_ARRIVAL
+    ) => {
       formDispatch({
-        type: formReducerActions.SET_SELECTED_DAY_PICKER_DEPARTURE,
+        type: dayPickerAction,
         value: date
       });
       if (date) {
-        appDispatch(setSelectedDepartureDate(format(date, 'y-MM-dd')));
+        if (inputAction === formReducerActions.SET_DEPARTURE_DATE_INPUT_VALUE) {
+          appDispatch(setSelectedDepartureDate(format(date, 'y-MM-dd')));
+        }
+        if (inputAction === formReducerActions.SET_ARRIVAL_DATE_INPUT_VALUE) {
+          appDispatch(setSelectedArrivalDate(format(date, 'y-MM-dd')));
+        }
         formDispatch({
-          type: formReducerActions.SET_DEPARTURE_DATE_INPUT_VALUE,
+          type: inputAction,
           value: format(date, 'dd.MM.y')
         });
       } else {
         formDispatch({
-          type: formReducerActions.SET_DEPARTURE_DATE_INPUT_VALUE,
-          value: ''
-        });
-      }
-    },
-    []
-  );
-
-  const handleArrivalDaySelect: SelectSingleEventHandler = useCallback(
-    (date) => {
-      formDispatch({
-        type: formReducerActions.SET_SELECTED_DAY_PICKER_ARRIVAL,
-        value: date
-      });
-      if (date) {
-        appDispatch(setSelectedArrivalDate(format(date, 'y-MM-dd')));
-        formDispatch({
-          type: formReducerActions.SET_ARRIVAL_DATE_INPUT_VALUE,
-          value: format(date, 'dd.MM.y')
-        });
-      } else {
-        formDispatch({
-          type: formReducerActions.SET_ARRIVAL_DATE_INPUT_VALUE,
+          type: inputAction,
           value: ''
         });
       }
@@ -235,13 +296,15 @@ export const TicketSearchForm: FC = () => {
   const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     (e) => {
       e.preventDefault();
-      navigate(navigationMap.TRAIN);
       console.log({
         selectedStartCityObject,
         selectedEndCityObject,
         selectedDepartureDate,
         selectedArrivalDate
       });
+      if (selectedStartCityObject && selectedEndCityObject) {
+        navigate(navigationMap.TRAIN);
+      }
     },
     [
       selectedStartCityObject,
@@ -275,11 +338,19 @@ export const TicketSearchForm: FC = () => {
                     formReducerActions.SET_START_CITY_INPUT_VALUE
                   )
                 }
+                onBlur={(e) =>
+                  handleDirectonInputBlur(
+                    e,
+                    formReducerActions.SET_START_CITY_INPUT_VALUE
+                  )
+                }
+                onFocus={toggleDepartureInputTooltipVisible}
                 inputValue={startCityInputValue}
                 requiredAttr={true}
               />
               <IconBtn icon={<LocationIcon />} />
             </div>
+            {departureInputTooltipVisible && <DirectionInputTooltip />}
             <CitiesTooltip
               cities={searchStartResult}
               handleCitySelection={(el) =>
@@ -307,11 +378,19 @@ export const TicketSearchForm: FC = () => {
                     formReducerActions.SET_END_CITY_INPUT_VALUE
                   )
                 }
+                onBlur={(e) =>
+                  handleDirectonInputBlur(
+                    e,
+                    formReducerActions.SET_END_CITY_INPUT_VALUE
+                  )
+                }
+                onFocus={toggleArrivalInputTooltipVisible}
                 inputValue={endCityInputValue}
                 requiredAttr={true}
               />
               <IconBtn icon={<LocationIcon />} />
             </div>
+            {arrivalInputTooltipVisible && <DirectionInputTooltip />}
             <CitiesTooltip
               cities={searchEndResult}
               handleCitySelection={(el) =>
@@ -327,7 +406,7 @@ export const TicketSearchForm: FC = () => {
         </div>
       </fieldset>
 
-      <fieldset className="max-w-[43.125rem]">
+      <fieldset className="max-w-[43.125rem] mt-[3.75rem]">
         <legend className={`px-2 py-3 ${getTailwindClasses(headerTitlesCSS)}`}>
           дата
         </legend>
@@ -341,6 +420,12 @@ export const TicketSearchForm: FC = () => {
                 nameAttr={inputNames.DATE_FROM_CITY}
                 handleChange={(e) =>
                   handleDateInputChange(
+                    e,
+                    formReducerActions.SET_DEPARTURE_DATE_INPUT_VALUE
+                  )
+                }
+                onBlur={(e) =>
+                  handleDateInputBlur(
                     e,
                     formReducerActions.SET_DEPARTURE_DATE_INPUT_VALUE
                   )
@@ -359,7 +444,13 @@ export const TicketSearchForm: FC = () => {
               isVisible={isDepartureDatePickerVisible}
               reference={departureDatePickerRef}
               selected={selectedDayPickerDeparture}
-              onSelect={handleDepartureDaySelect}
+              onSelect={(date) =>
+                handleDaySelecttion(
+                  date,
+                  formReducerActions.SET_DEPARTURE_DATE_INPUT_VALUE,
+                  formReducerActions.SET_SELECTED_DAY_PICKER_DEPARTURE
+                )
+              }
             />
           </div>
           <div
@@ -371,6 +462,12 @@ export const TicketSearchForm: FC = () => {
                 nameAttr={inputNames.DATE_TO_CITY}
                 handleChange={(e) =>
                   handleDateInputChange(
+                    e,
+                    formReducerActions.SET_ARRIVAL_DATE_INPUT_VALUE
+                  )
+                }
+                onBlur={(e) =>
+                  handleDateInputBlur(
                     e,
                     formReducerActions.SET_ARRIVAL_DATE_INPUT_VALUE
                   )
@@ -389,7 +486,13 @@ export const TicketSearchForm: FC = () => {
               isVisible={isArrivalDatePickerVisible}
               reference={arrivalDatePickerRef}
               selected={selectedDayPickerArrival}
-              onSelect={handleArrivalDaySelect}
+              onSelect={(date) =>
+                handleDaySelecttion(
+                  date,
+                  formReducerActions.SET_ARRIVAL_DATE_INPUT_VALUE,
+                  formReducerActions.SET_SELECTED_DAY_PICKER_ARRIVAL
+                )
+              }
             />
           </div>
         </div>

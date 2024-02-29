@@ -9,6 +9,7 @@ type T_InputProps = {
   typeAttr: 'text' | 'date' | 'email';
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
+  onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
   requiredAttr?: boolean;
 };
 
@@ -20,7 +21,8 @@ export const Input: FC<T_InputProps> = ({
   typeAttr,
   onChange,
   requiredAttr,
-  onBlur
+  onBlur,
+  onFocus
 }) => {
   return (
     <>
@@ -34,6 +36,7 @@ export const Input: FC<T_InputProps> = ({
           onChange={onChange as ChangeEventHandler<HTMLInputElement>}
           required={requiredAttr}
           onBlur={onBlur}
+          onFocus={onFocus}
         />
       </div>
     </>

@@ -1,8 +1,8 @@
-import { getInputByName, inputPlaceholderColor } from '6_shared';
-import { ChangeEvent } from 'react';
+import { inputPlaceholderColor } from '6_shared';
+import { ChangeEvent, FocusEvent } from 'react';
 
-export const setDateInputErrorPlaceholder = (
-  e: ChangeEvent<HTMLInputElement>,
+export const setInputErrorPlaceholder = (
+  e: ChangeEvent<HTMLInputElement> | FocusEvent<HTMLInputElement>,
   errorPlaceholder: string
 ) => {
   const basePlaceholder = e.target.placeholder;

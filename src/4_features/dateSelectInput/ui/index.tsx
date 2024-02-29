@@ -1,6 +1,6 @@
 import { inputNames } from '6_shared';
 import { Input, inputSizeCSS } from '6_shared';
-import { type FC, ChangeEvent } from 'react';
+import { type FC, ChangeEvent, FocusEvent } from 'react';
 
 type T_DateSelectInputProps = {
   nameAttr: inputNames.DATE_FROM_CITY | inputNames.DATE_TO_CITY;
@@ -8,6 +8,7 @@ type T_DateSelectInputProps = {
   inputValue: string;
   typeAttr: 'text' | 'date' | 'email';
   requiredAttr?: boolean;
+  onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
 };
 
 export const DateSelectInput: FC<T_DateSelectInputProps> = ({
@@ -15,7 +16,8 @@ export const DateSelectInput: FC<T_DateSelectInputProps> = ({
   handleChange,
   inputValue,
   typeAttr,
-  requiredAttr
+  requiredAttr,
+  onBlur
 }) => {
   return (
     <Input
@@ -26,6 +28,7 @@ export const DateSelectInput: FC<T_DateSelectInputProps> = ({
       onChange={handleChange}
       typeAttr={typeAttr}
       requiredAttr={requiredAttr}
+      onBlur={onBlur}
     />
   );
 };
