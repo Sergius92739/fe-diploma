@@ -34,3 +34,9 @@ body {
   max-width: var(--max-width-container);
   margin: 0 auto;
 }
+
+.arrival-date::before {
+  content: '';
+  width: 40px;
+  height: 60px;
+}

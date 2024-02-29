@@ -5,24 +5,11 @@ export interface ITicketSearchState {
   selectedEndCityObject: TCityObj | null;
   selectedDepartureDate: string;
   selectedArrivalDate: string;
-}
-
-export interface IUseReducerFormState {
   startCityInputValue: string;
   endCityInputValue: string;
   departureDateInputValue: string;
   arrivalDateInputValue: string;
-  selectedDayPickerDeparture: Date | undefined;
-  selectedDayPickerArrival: Date | undefined;
 }
-
-export type TUseReducerAction =
-  | { type: 'SET_START_CITY_INPUT_VALUE'; value: string }
-  | { type: 'SET_END_CITY_INPUT_VALUE'; value: string }
-  | { type: 'SET_DEPARTURE_DATE_INPUT_VALUE'; value: string }
-  | { type: 'SET_ARRIVAL_DATE_INPUT_VALUE'; value: string }
-  | { type: 'SET_SELECTED_DAY_PICKER_DEPARTURE'; value: Date | undefined }
-  | { type: 'SET_SELECTED_DAY_PICKER_ARRIVAL'; value: Date | undefined };
 
 export type TDirectionObject = {
   have_first_class: boolean;
@@ -66,7 +53,7 @@ export type TDepartureArrival = {
   };
   from: TFromTo;
   to: TFromTo;
-  price_info: {
+  price_info?: {
     first?: TClassPrices;
     second?: TClassPrices;
     third?: TClassPrices;
