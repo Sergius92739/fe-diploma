@@ -9,11 +9,12 @@ import {
   headerTitlesCSS,
   LocationIcon,
   useOutsideClick,
-  ticketsSearchAttributes,
   setInputErrorPlaceholder,
   useAppDispatch,
   upperCaseFirst,
-  formatDate
+  formatDate,
+  ticketSearchFormAction,
+  navigationMap
 } from '6_shared';
 import {
   DateSelectInput,
@@ -39,7 +40,6 @@ import { DatePicker } from '4_features/datePicker/ui';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { selectTicketSearch } from '../model/ticketSearchSlice';
-import { formReducerActions, navigationMap } from '6_shared/config/enums';
 import { useNavigate } from 'react-router-dom';
 import { DirectionInputTooltip } from '4_features/directionInputTooltip/ui';
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
@@ -130,10 +130,10 @@ export const TicketSearchForm: FC = () => {
       if (value && !e.relatedTarget?.closest('ul')?.querySelector('li')) {
         appDispatch(action(''));
         setInputErrorPlaceholder(e, 'Выберите город из списка');
-        if (action.type === formReducerActions.SET_START_CITY_INPUT_VALUE) {
+        if (action.type === ticketSearchFormAction.SET_START_CITY_INPUT_VALUE) {
           setStartSearchResult([]);
         }
-        if (action.type === formReducerActions.SET_END_CITY_INPUT_VALUE) {
+        if (action.type === ticketSearchFormAction.SET_END_CITY_INPUT_VALUE) {
           setEndSearchResult([]);
         }
       }
@@ -172,11 +172,14 @@ export const TicketSearchForm: FC = () => {
           return;
         } else {
           if (
-            action.type === formReducerActions.SET_DEPARTURE_DATE_INPUT_VALUE
+            action.type ===
+            ticketSearchFormAction.SET_DEPARTURE_DATE_INPUT_VALUE
           ) {
             appDispatch(setSelectedDepartureDate(formatDate(value)));
           }
-          if (action.type === formReducerActions.SET_ARRIVAL_DATE_INPUT_VALUE) {
+          if (
+            action.type === ticketSearchFormAction.SET_ARRIVAL_DATE_INPUT_VALUE
+          ) {
             appDispatch(setSelectedArrivalDate(formatDate(value)));
           }
         }
@@ -247,10 +250,10 @@ export const TicketSearchForm: FC = () => {
           >
         | ActionCreatorWithPayload<string, 'ticketSearch/setEndCityInputValue'>
     ) => {
-      if (action.type === formReducerActions.SET_START_CITY_INPUT_VALUE) {
+      if (action.type === ticketSearchFormAction.SET_START_CITY_INPUT_VALUE) {
         appDispatch(setSelectedStartCityObject(city));
       }
-      if (action.type === formReducerActions.SET_END_CITY_INPUT_VALUE) {
+      if (action.type === ticketSearchFormAction.SET_END_CITY_INPUT_VALUE) {
         appDispatch(setSelectedEndCityObject(city));
       }
       appDispatch(action(city.name));
@@ -275,12 +278,14 @@ export const TicketSearchForm: FC = () => {
     ) => {
       if (date) {
         if (
-          inputAction.type === formReducerActions.SET_DEPARTURE_DATE_INPUT_VALUE
+          inputAction.type ===
+          ticketSearchFormAction.SET_DEPARTURE_DATE_INPUT_VALUE
         ) {
           appDispatch(setSelectedDepartureDate(format(date, 'y-MM-dd')));
         }
         if (
-          inputAction.type === formReducerActions.SET_ARRIVAL_DATE_INPUT_VALUE
+          inputAction.type ===
+          ticketSearchFormAction.SET_ARRIVAL_DATE_INPUT_VALUE
         ) {
           appDispatch(setSelectedArrivalDate(format(date, 'y-MM-dd')));
         }
@@ -293,13 +298,12 @@ export const TicketSearchForm: FC = () => {
   );
 
   const handleSwapBtnClick = useCallback(() => {
-    if (selectedEndCityObject) {
-      appDispatch(setSelectedStartCityObject(selectedEndCityObject));
+    if (!selectedStartCityObject || !selectedEndCityObject) {
+      return;
     }
+    appDispatch(setSelectedStartCityObject(selectedEndCityObject));
+    appDispatch(setSelectedEndCityObject(selectedStartCityObject));
     appDispatch(setStartCityInputValue(endCityInputValue));
-    if (selectedStartCityObject) {
-      appDispatch(setSelectedEndCityObject(selectedStartCityObject));
-    }
     appDispatch(setEndCityInputValue(startCityInputValue));
   }, [
     selectedStartCityObject,
@@ -311,6 +315,12 @@ export const TicketSearchForm: FC = () => {
   const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     (e) => {
       e.preventDefault();
+      // console.log({
+      //   selectedStartCityObject,
+      //   selectedEndCityObject,
+      //   selectedDepartureDate,
+      //   selectedArrivalDate
+      // });
       if (selectedStartCityObject && selectedEndCityObject) {
         navigate(navigationMap.TRAIN);
       }
@@ -333,10 +343,7 @@ export const TicketSearchForm: FC = () => {
           направление
         </legend>
         <div className="flex justify-between">
-          <div
-            data-id={ticketsSearchAttributes.DIRECTION_SELECT_START}
-            className="relative"
-          >
+          <div className="relative">
             <div className={`flex rounded-[3px] bg-white ${btnCSS.XL_WIDTH}`}>
               <DirectionSelectInput
                 typeAttr="text"
@@ -364,10 +371,7 @@ export const TicketSearchForm: FC = () => {
             />
           </div>
           <SwapBtn onClick={handleSwapBtnClick} />
-          <div
-            data-id={ticketsSearchAttributes.DIRECTION_SELECT_END}
-            className="relative"
-          >
+          <div className="relative">
             <div className={`flex rounded-[3px] bg-white ${btnCSS.XL_WIDTH}`}>
               <DirectionSelectInput
                 typeAttr="text"
@@ -400,10 +404,7 @@ export const TicketSearchForm: FC = () => {
           дата
         </legend>
         <div className="flex justify-between">
-          <div
-            data-id={ticketsSearchAttributes.DATE_SELECT_START}
-            className="relative"
-          >
+          <div className="relative">
             <div className={`flex rounded-[3px] bg-white ${btnCSS.XL_WIDTH}`}>
               <DateSelectInput
                 nameAttr={inputNames.DATE_FROM_CITY}
@@ -419,7 +420,6 @@ export const TicketSearchForm: FC = () => {
               <IconBtn
                 icon={<CalendarIcon />}
                 onClick={setDepartureDatePickerVisible}
-                name={ticketsSearchAttributes.ICON_BTN_CALENDAR}
               />
             </div>
             <DatePicker
@@ -431,10 +431,7 @@ export const TicketSearchForm: FC = () => {
               }
             />
           </div>
-          <div
-            data-id={ticketsSearchAttributes.DATE_SELECT_END}
-            className="arrival-date relative flex"
-          >
+          <div className="arrival-date relative flex">
             <div className={`flex rounded-[3px] bg-white ${btnCSS.XL_WIDTH}`}>
               <DateSelectInput
                 nameAttr={inputNames.DATE_TO_CITY}
@@ -448,7 +445,6 @@ export const TicketSearchForm: FC = () => {
               <IconBtn
                 icon={<CalendarIcon name="" />}
                 onClick={setArrivalDatePickerVisible}
-                name={ticketsSearchAttributes.ICON_BTN_CALENDAR}
               />
             </div>
             <DatePicker

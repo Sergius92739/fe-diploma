@@ -18,7 +18,8 @@ export enum btnCSS {
   INACTIVE_CLR = 'bg-[#918F94]',
   BASE_CLR = 'bg-[#FFA800]',
   ACTIVE_CLR = 'bg-[#FFFFFF]',
-  TEXT_DARK = 'text-[#292929]'
+  TEXT_DARK = 'text-[#292929]',
+  TEXT_WHITE = 'text-[#FFFFFF]'
 }
 
 export enum headerTitlesCSS {
@@ -55,21 +56,12 @@ export enum btnNames {
   DATE_INPUT_ICON_BTN = 'date-icon-btn'
 }
 
-export enum ticketsSearchAttributes {
-  DIRECTION_SELECT_START = 'direction-select-start',
-  DIRECTION_SELECT_END = 'direction-select-end',
-  DATE_SELECT_START = 'date-select-start',
-  DATE_SELECT_END = 'date-select-end',
-  ICON_BTN_CALENDAR = 'icon-btn-calendar',
-  ICON_BTN_DIRECTION = 'icon-btn-direction'
-}
-
 export enum hiddenCalssNames {
   VISUALY_HIDDEN = 'visually_hidden',
   DISPLAY_NONE = 'd_none'
 }
 
-export enum formReducerActions {
+export enum ticketSearchFormAction {
   SET_START_CITY_INPUT_VALUE = 'ticketSearch/setStartCityInputValue',
   SET_END_CITY_INPUT_VALUE = 'ticketSearch/setEndCityInputValue',
   SET_DEPARTURE_DATE_INPUT_VALUE = 'ticketSearch/setDepartureDateInputValue',

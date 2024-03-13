@@ -10,6 +10,7 @@ export const TicketSearchFormBtn: FC = () => {
       bgColor={btnCSS.BASE_CLR}
       width={btnCSS.XL_WIDTH}
       height={btnCSS.XL_HEIGHT}
+      uppercase="uppercase"
     />
   );
 };

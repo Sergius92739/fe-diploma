@@ -1,11 +1,31 @@
-import { useGetByDirectionsQuery } from '3_widgets/ticketSearchForm/api/api';
+import {
+  useGetByDirectionsQuery,
+  useGetByDirectionStartDateEndDateQuery
+} from '3_widgets/ticketSearchForm/api/api';
+import { selectTicketSearch } from '3_widgets/ticketSearchForm/model/ticketSearchSlice';
+import { TDepartureArrival } from '5_entities';
+import { Direction } from '5_entities/direction/ui';
 import { Loader } from '6_shared';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const TrainSelectPage = () => {
-  const { data, error, isLoading } = useGetByDirectionsQuery({
-    fromCityId: '65a7e30393154100421a14b6',
-    toCityId: '65a7e30393154100421a14b7'
+  const {
+    selectedStartCityObject,
+    selectedEndCityObject,
+    selectedDepartureDate,
+    selectedArrivalDate,
+    startCityInputValue,
+    endCityInputValue,
+    departureDateInputValue,
+    arrivalDateInputValue
+  } = useSelector(selectTicketSearch);
+
+  const { data, error, isLoading } = useGetByDirectionStartDateEndDateQuery({
+    fromCityId: selectedStartCityObject?._id as number,
+    toCityId: selectedEndCityObject?._id as number,
+    dateStart: selectedDepartureDate,
+    dateEnd: selectedArrivalDate
   });
 
   useEffect(() => {
@@ -17,6 +37,13 @@ const TrainSelectPage = () => {
       {isLoading && <Loader />}
       {error && <div>Error!!!</div>}
       <div>TrainSelectPage</div>
+      {data?.items &&
+        data?.items.map((e) => (
+          <Direction
+            key={e.departure?._id}
+            {...(e.departure as TDepartureArrival)}
+          />
+        ))}
     </div>
   );
 };

@@ -6,6 +6,7 @@ type T_ButtonProps = {
   bgColor: string;
   width: string;
   height: string;
+  uppercase: string;
 };
 
 export const Button: FC<T_ButtonProps> = ({
@@ -13,11 +14,12 @@ export const Button: FC<T_ButtonProps> = ({
   color,
   bgColor,
   width,
-  height
+  height,
+  uppercase
 }) => {
   return (
     <button
-      className={`text-2xl ${color} ${bgColor} ${height} ${width} rounded-[5px] font-bold uppercase `}
+      className={`text-2xl ${color} ${bgColor} ${height} ${width} rounded-[5px] font-bold ${uppercase}`}
       type="submit"
     >
       {content}
