@@ -41,5 +41,5 @@ export { ReactComponent as Lux } from './assets/icons/lux.svg';
 export { ReactComponent as ReservedSeat } from './assets/icons/platckard.svg';
 export { ReactComponent as Ruble } from './assets/icons/rubble.svg';
 export { ReactComponent as Wifi } from './assets/icons/wifi.svg';
-export { ReactComponent as Cup } from './assets/icons/cup1.svg';
+export { ReactComponent as Cup } from './assets/icons/cup3.svg';
 export { msecToString } from './lib/utils/msecToString';

@@ -1,28 +1,46 @@
-import { Ruble } from '6_shared';
 import type { FC } from 'react';
+import { AvailableSeatsInfoItem } from './AvailableSeatsInfoItem';
+import { TClassPrices, TSeatsInfo } from '../model/types';
 
 type T_AvailableSeatsInfoProps = {
-  seatsCount: number;
-  seatsTopPrice: number;
-  nameOfClass: string;
+  haveFirstClass: boolean;
+  haveSecondClass: boolean;
+  haveThirdClass: boolean;
+  haveFourthClass: boolean;
+  availableSeatsInfo: TSeatsInfo;
+  priceInfo:
+    | {
+        [key: string]: TClassPrices;
+      }
+    | undefined;
 };
 
 export const AvailableSeatsInfo: FC<T_AvailableSeatsInfoProps> = ({
-  seatsCount,
-  seatsTopPrice,
-  nameOfClass
+  haveFirstClass,
+  haveFourthClass,
+  haveSecondClass,
+  haveThirdClass,
+  availableSeatsInfo,
+  priceInfo
 }) => {
+  const arrOfClasses = [
+    { isThere: haveFirstClass, name: 'Люкс', prefix: 'first' },
+    { isThere: haveSecondClass, name: 'Купе', prefix: 'second' },
+    { isThere: haveThirdClass, name: 'Плацкарт', prefix: 'third' },
+    { isThere: haveFourthClass, name: 'Сидячий', prefix: 'fourth' }
+  ];
   return (
-    <li className="flex justify-between items-baseline mt-3">
-      <div className="w-20">{nameOfClass}</div>
-      <div className="font-medium text-[#FFA800]">{seatsCount}</div>
-      <div className="flex items-baseline">
-        <div className="text-[#928F94]">от</div>
-        <div className="ml-2 text-2xl font-bold w-14">{seatsTopPrice}</div>
-        <div className="ml-2">
-          <Ruble />
-        </div>
-      </div>
-    </li>
+    <ul>
+      {arrOfClasses.map((e) =>
+        e.isThere ? (
+          <AvailableSeatsInfoItem
+            key={e.prefix}
+            seatsCount={availableSeatsInfo[e.prefix]}
+            bottomPrice={priceInfo?.[e.prefix].bottom_price as number}
+            nameOfClass={e.name}
+          />
+        ) : null
+      )}
+    </ul>
   );
 };

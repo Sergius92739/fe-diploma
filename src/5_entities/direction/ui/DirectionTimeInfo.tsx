@@ -1,15 +1,6 @@
-import { ArrowRightYellow, msecToString } from '6_shared';
-import type { FC } from 'react';
-
-type T_DirectionTimeInfoProps = {
-  fromDateTime: number;
-  fromCityName: string;
-  fromRailwayStation: string;
-  duration: number;
-  toDateTime: number;
-  toCityName: string;
-  toRailwayStation: string;
-};
+import { msecToString } from '6_shared';
+import type { FC, ReactNode } from 'react';
+import { T_DirectionTimeInfoProps } from '../model/types';
 
 export const DirectionTimeInfo: FC<T_DirectionTimeInfoProps> = ({
   fromDateTime,
@@ -18,28 +9,27 @@ export const DirectionTimeInfo: FC<T_DirectionTimeInfoProps> = ({
   duration,
   toDateTime,
   toCityName,
-  toRailwayStation
+  toRailwayStation,
+  arrow
 }) => {
   return (
-    <>
-      <div className="pl-9 py-10">
+    <div className="flex p-8 justify-between">
+      <div className="">
         <div className="text-2xl font-bold">{msecToString(fromDateTime)}</div>
         <div className="font-normal text-[18px]">{fromCityName}</div>
         <div className="text-[#C4C4C4] text-[16px]">{fromRailwayStation}</div>
       </div>
       <div>
-        <div className="text-[18px] text-center text-[#C4C4C4] mt-9">
+        <div className="text-[18px] text-center text-[#C4C4C4]">
           {msecToString(duration)}
         </div>
-        <div className="flex justify-center mt-2">
-          <ArrowRightYellow />
-        </div>
+        <div className="flex justify-center mt-2">{arrow}</div>
       </div>
-      <div className="pl-9 py-10">
+      <div className="">
         <div className="text-2xl font-bold">{msecToString(toDateTime)}</div>
         <div className="font-normal text-[18px]">{toCityName}</div>
         <div className="text-[#C4C4C4] text-[16px]">{toRailwayStation}</div>
       </div>
-    </>
+    </div>
   );
 };

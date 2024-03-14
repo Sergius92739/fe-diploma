@@ -1,5 +1,50 @@
+import { FC, ReactNode } from 'react';
+
 export interface IDirectionsData {
   items: TDirectionObject[];
+}
+
+export type T_TrainNameInfoProps = {
+  trainName: string;
+  fromCityName: string;
+  toCityName: string;
+  icon?: ReactNode;
+};
+
+export type T_DirectionTimeInfoProps = {
+  fromDateTime: number;
+  fromCityName: string;
+  fromRailwayStation: string;
+  duration: number;
+  toDateTime: number;
+  toCityName: string;
+  toRailwayStation: string;
+  arrow: ReactNode;
+};
+
+export type T_SeatsAndServiceInfoProps = {
+  haveFirstClass: boolean;
+  haveSecondClass: boolean;
+  haveThirdClass: boolean;
+  haveFourthClass: boolean;
+  priceInfo:
+    | {
+        [key: string]: TClassPrices;
+      }
+    | undefined;
+  availableSeatsInfo: TSeatsInfo;
+  haveAirConditioning: boolean;
+  haveWifi: boolean;
+  isExpress: boolean;
+  children?: ReactNode;
+};
+
+export interface IDirectionProps {
+  // directionInfo: TDepartureArrival;
+  TrainNameInfo: ReactNode;
+  DirectionTimeInfo: ReactNode;
+  SeatsAndServiceInfo: ReactNode;
+  borderNone?: string;
 }
 
 export type TDirectionObject = {

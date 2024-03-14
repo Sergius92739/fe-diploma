@@ -1,24 +1,16 @@
-import { ArrowRightBlack, TrainIcon } from '6_shared';
+import { ArrowRightBlack } from '6_shared';
 import type { FC } from 'react';
-
-type T_TrainNameInfoProps = {
-  trainName: string;
-  fromCityName: string;
-  toCityName: string;
-};
+import { T_TrainNameInfoProps } from '../model/types';
 
 export const TrainNameInfo: FC<T_TrainNameInfoProps> = ({
   trainName,
   fromCityName,
-  toCityName
+  toCityName,
+  icon
 }) => {
   return (
     <div className="bg-[#E4E0E9] p-[1.5rem] text-[#292929]">
-      <div className="flex items-center justify-center">
-        <div className="py-4 px-5 border-[2px] border-white rounded-[100%]">
-          <TrainIcon />
-        </div>
-      </div>
+      {icon}
       <div className="text-center text-2xl font-medium mt-2">{trainName}</div>
       <div className="font-normal text-base mt-4">
         <div className="flex">

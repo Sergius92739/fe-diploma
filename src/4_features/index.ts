@@ -5,4 +5,5 @@ export { SwapBtn } from './swapBtn/ui';
 export { IconBtn } from './IconBtn/ui';
 export { CitiesTooltip } from './citiesTooltip/ui';
 export { useCitySearch } from './citiesTooltip/model/hooks';
+export { DirectionBtn } from './directionBtn';
 export type { TCityObj } from './citiesTooltip/model/types';
