@@ -39,12 +39,11 @@ export type T_SeatsAndServiceInfoProps = {
   children?: ReactNode;
 };
 
-export interface IDirectionProps {
-  // directionInfo: TDepartureArrival;
+export interface IDirectionLayoutProps {
   TrainNameInfo: ReactNode;
   DirectionTimeInfo: ReactNode;
   SeatsAndServiceInfo: ReactNode;
-  borderNone?: string;
+  borderCss?: string;
 }
 
 export type TDirectionObject = {
@@ -116,3 +115,10 @@ export type TClassPrices = {
   linens_price: number;
   wifi_price: number;
 };
+
+export interface DirectionSectionProps {
+  direction: TDepartureArrival;
+  DirectionLayout: FC<IDirectionLayoutProps>;
+  children?: ReactNode;
+  borderCss: string;
+}

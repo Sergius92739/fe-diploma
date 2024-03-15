@@ -1,11 +1,8 @@
-import {
-  IDirectionProps,
-  TDepartureArrival,
-  TDirectionObject
-} from '5_entities';
+import { TDepartureArrival } from '5_entities';
 import type { FC } from 'react';
-import { DirectionSection } from './DirectionSection';
+import { DirectionSection } from '5_entities';
 import { T_GroupDirectionsViewProps } from '../model/types';
+import { DirectionBtn } from '4_features';
 
 export const GroupDirectionsView: FC<T_GroupDirectionsViewProps> = ({
   DirectionLayout,
@@ -15,12 +12,14 @@ export const GroupDirectionsView: FC<T_GroupDirectionsViewProps> = ({
     <DirectionSection
       direction={directionsInfo.departure as TDepartureArrival}
       DirectionLayout={DirectionLayout}
-      isLast={false}
+      borderCss="border-b-0"
     />
     <DirectionSection
       direction={directionsInfo.arrival as TDepartureArrival}
       DirectionLayout={DirectionLayout}
-      isLast={true}
-    />
+      borderCss="border-t-0"
+    >
+      <DirectionBtn />
+    </DirectionSection>
   </div>
 );

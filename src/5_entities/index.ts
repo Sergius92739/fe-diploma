@@ -1,13 +1,7 @@
+export { DirectionSection } from './direction/ui';
+export { DirectionLayout } from './direction/ui/directionLayout';
 export type {
-  TDirectionObject,
-  TClassPrices,
   TDepartureArrival,
-  TFromTo,
-  TSeatsInfo,
-  IDirectionProps
+  TDirectionObject,
+  IDirectionLayoutProps
 } from './direction/model/types';
-
-export { DirectionTimeInfo } from './direction/ui/DirectionTimeInfo';
-export { SeatsAndServiceInfo } from '5_entities/direction/ui/SeatsAndServiceInfo';
-export { TrainIconView } from './direction/ui/TrainIconView';
-export { TrainNameInfo } from './direction/ui/TrainNameInfo';

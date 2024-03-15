@@ -1,13 +1,9 @@
-import { DirectionView } from '3_widgets/directionView/ui';
-import { GroupDirectionsView } from '3_widgets/groupDirectionsView/ui';
-import {
-  useGetByDirectionsQuery,
-  useGetByDirectionStartDateEndDateQuery
-} from '3_widgets/ticketSearchForm/api/api';
+import { DirectionView } from '3_widgets';
+import { GroupDirectionsView } from '3_widgets';
+import { useGetByDirectionStartDateEndDateQuery } from '3_widgets/ticketSearchForm/api/api';
 import { selectTicketSearch } from '3_widgets/ticketSearchForm/model/ticketSearchSlice';
 import { TDepartureArrival } from '5_entities';
-import { DirectionLayout } from '5_entities/direction/ui';
-import { GroupOfDirections } from '5_entities/groupOfDirections/ui';
+import { DirectionLayout } from '5_entities';
 import { Loader } from '6_shared';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -52,7 +48,7 @@ const TrainSelectPage = () => {
               <DirectionView
                 key={e.departure?._id}
                 DirectionLayout={DirectionLayout}
-                directionInfo={e.departure as TDepartureArrival}
+                directionInfo={e}
               />
             )
           )

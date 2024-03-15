@@ -1,7 +1,7 @@
 import { IDirectionLayoutProps, TDirectionObject } from '5_entities';
-import { FC } from 'react';
+import type { FC } from 'react';
 
-export type T_GroupDirectionsViewProps = {
+export type T_DirectionViewProps = {
   DirectionLayout: FC<IDirectionLayoutProps>;
-  directionsInfo: TDirectionObject;
+  directionInfo: TDirectionObject;
 };
