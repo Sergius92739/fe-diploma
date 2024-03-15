@@ -1,4 +1,8 @@
-import { IDirectionProps, TDepartureArrival } from '5_entities';
+import {
+  IDirectionProps,
+  TDepartureArrival,
+  TDirectionObject
+} from '5_entities';
 import { FC } from 'react';
 
 export interface DirectionSectionProps {
@@ -6,3 +10,8 @@ export interface DirectionSectionProps {
   DirectionLayout: FC<IDirectionProps>;
   isLast: boolean;
 }
+
+export type T_GroupDirectionsViewProps = {
+  DirectionLayout: FC<IDirectionProps>;
+  directionsInfo: TDirectionObject;
+};

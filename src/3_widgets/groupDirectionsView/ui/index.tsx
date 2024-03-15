@@ -5,11 +5,7 @@ import {
 } from '5_entities';
 import type { FC } from 'react';
 import { DirectionSection } from './DirectionSection';
-
-type T_GroupDirectionsViewProps = {
-  DirectionLayout: FC<IDirectionProps>;
-  directionsInfo: TDirectionObject;
-};
+import { T_GroupDirectionsViewProps } from '../model/types';
 
 export const GroupDirectionsView: FC<T_GroupDirectionsViewProps> = ({
   DirectionLayout,
